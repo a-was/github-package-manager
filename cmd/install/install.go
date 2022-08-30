@@ -2,6 +2,7 @@ package install
 
 import (
 	"fmt"
+	"github-package-manager/config"
 	"github-package-manager/db"
 	"github-package-manager/github"
 	"io"
@@ -13,9 +14,9 @@ import (
 	"strings"
 )
 
-const (
-	repoDir = "tmp"
-	binDir  = "bin"
+var (
+	repoFolder = config.RepoFolder
+	binFolder  = config.BinFolder
 )
 
 func Install(repo string) error {
@@ -43,11 +44,11 @@ func Install(repo string) error {
 	}
 	selectedAsset := release.Assets[selectedIdx-1]
 
-	filePath := filepath.Join(repoDir, selectedAsset.Name)
+	filePath := filepath.Join(repoFolder, selectedAsset.Name)
 
-	os.RemoveAll(repoDir)
-	os.MkdirAll(repoDir, 0755)
-	os.MkdirAll(binDir, 0755)
+	os.RemoveAll(repoFolder)
+	os.MkdirAll(repoFolder, 0755)
+	os.MkdirAll(binFolder, 0755)
 
 	fmt.Printf("Selected file: %s, downloading...\n", selectedAsset.Name)
 	if err := downloadFile(selectedAsset.URL, filePath); err != nil {
@@ -55,13 +56,13 @@ func Install(repo string) error {
 	}
 	fmt.Println("Downloaded successfully.")
 
-	if err := uncompressFile(repoDir, selectedAsset.Name); err != nil {
+	if err := uncompressFile(repoFolder, selectedAsset.Name); err != nil {
 		return err
 	}
 
 	i := 1
 	filesMap := map[int]string{}
-	filepath.Walk(repoDir, func(path string, info fs.FileInfo, err error) error {
+	filepath.Walk(repoFolder, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -69,7 +70,7 @@ func Install(repo string) error {
 			return nil
 		}
 
-		p := strings.TrimPrefix(path, fmt.Sprintf("%s/", repoDir))
+		p := strings.TrimPrefix(path, fmt.Sprintf("%s/", repoFolder))
 		filesMap[i] = p
 		fmt.Printf("%2d) %s\n", i, p)
 
@@ -89,17 +90,11 @@ func Install(repo string) error {
 	}
 	selectedFile := filesMap[selectedIdx]
 
-	// os.Rename(
-	// 	filepath.Join(repoDir, selectedFile),
-	// 	filepath.Join(binDir, filepath.Base(selectedFile)),
-	// )
 	copyFile(
-		filepath.Join(repoDir, selectedFile),
-		filepath.Join(binDir, filepath.Base(selectedFile)),
+		filepath.Join(repoFolder, selectedFile),
+		filepath.Join(binFolder, filepath.Base(selectedFile)),
 	)
 	fmt.Println("File installed into bin folder")
-
-	// os.RemoveAll(repoDir)
 
 	db.SaveRelease(release)
 

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 )
 
-func uncompressFile(baseDir, filename string) error {
+func uncompressFile(baseFolder, filename string) error {
 	ext := filepath.Ext(filename)
 	u := uncompress{
 		filename: filename,
@@ -50,7 +50,7 @@ type uncompress struct {
 func (u *uncompress) exec() error {
 	u.cmd = append(u.cmd, u.filename)
 	cmd := exec.Command(u.cmd[0], u.cmd[1:]...)
-	cmd.Dir = repoDir
+	cmd.Dir = repoFolder
 	return cmd.Run()
 	// d, err := cmd.CombinedOutput()
 	// fmt.Println("uncompress:", string(d), err)

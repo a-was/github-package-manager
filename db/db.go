@@ -2,11 +2,10 @@ package db
 
 import (
 	"encoding/json"
+	"github-package-manager/config"
 	"github-package-manager/github"
 	"os"
 )
-
-const databasePath = "database.json"
 
 type dbT struct {
 	Installed map[string]version // key: repo, value: installed version
@@ -22,7 +21,7 @@ var db = dbT{
 }
 
 func (db *dbT) load() {
-	data, err := os.ReadFile(databasePath)
+	data, err := os.ReadFile(config.DatabasePath)
 	if err != nil {
 		return
 	}
@@ -31,7 +30,7 @@ func (db *dbT) load() {
 
 func (db *dbT) dump() {
 	file, _ := json.MarshalIndent(db, "", "    ")
-	_ = os.WriteFile(databasePath, file, 0644)
+	_ = os.WriteFile(config.DatabasePath, file, 0644)
 }
 
 func CheckIfInstalled(r *github.Release) bool {
