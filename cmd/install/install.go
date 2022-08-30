@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-var (
+const (
 	repoDir = "tmp"
 	binDir  = "bin"
 )
