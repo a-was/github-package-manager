@@ -18,16 +18,20 @@ go build .
 
 # Configuration
 
+GHPM is configured by environment variables
+
 #### `GHPM_DATABASE_PATH`
 Path to database file \
 Default `$HOME/.ghpm.json`
 
 #### `GHPM_BIN_FOLDER`
 Folder to install downloaded binaries \
-Default `$HOME/.bin/`
+It is created by GHPM \
+Default `$HOME/bin/`
 
 #### `GHPM_REPO_FOLDER`
 Folder to download assets \
+It is created by GHPM and cleared on every installation \
 Default `$HOME/tmp/`
 
 # Usage
@@ -42,7 +46,7 @@ github-package-manager
 github-package-manager install sharkdp/bat
 ```
 
-# Todo:
+# Todo
 - Database
     - Selected asset?
 - Handle .deb / .rpm / .Appimage files
