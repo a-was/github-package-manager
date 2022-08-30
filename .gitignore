@@ -2,3 +2,4 @@ github-package-manager
 github-package-manager.exe
 bin/
 tmp/
+database.json

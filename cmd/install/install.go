@@ -2,7 +2,11 @@ package install
 
 import (
 	"fmt"
+	"github-package-manager/db"
+	"github-package-manager/github"
+	"io"
 	"io/fs"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -16,9 +20,14 @@ var (
 
 func Install(repo string) error {
 	fmt.Println("Using repo", repo)
-	release, err := getLatestRelease(repo)
+	release, err := github.GetLatestRelease(repo)
 	if err != nil {
 		return err
+	}
+
+	if db.CheckIfInstalled(release) {
+		fmt.Println("Newest version already installed")
+		return nil
 	}
 
 	fmt.Println("Select download file:")
@@ -87,10 +96,36 @@ func Install(repo string) error {
 		filepath.Join(repoDir, selectedFile),
 		filepath.Join(binDir, filepath.Base(selectedFile)),
 	)
-	fmt.Println("File moved to bin folder")
+	fmt.Println("File installed into bin folder")
 
 	// os.RemoveAll(repoDir)
 
+	db.SaveRelease(release)
+
+	return nil
+}
+
+func downloadFile(url, filepath string) error {
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	tmpFilepath := filepath + ".tmp"
+
+	file, err := os.Create(tmpFilepath)
+	if err != nil {
+		return err
+	}
+
+	_, err = io.Copy(file, resp.Body)
+	if err != nil {
+		return err
+	}
+
+	file.Close()
+	os.Rename(tmpFilepath, filepath)
 	return nil
 }
 
