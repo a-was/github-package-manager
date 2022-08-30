@@ -15,6 +15,8 @@ type ghAsset struct {
 }
 
 type ghRelease struct {
+	ID     int       `json:"id"`
+	Name   string    `json:"tag_name"`
 	Assets []ghAsset `json:"assets"`
 }
 

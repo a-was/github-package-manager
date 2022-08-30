@@ -2,9 +2,11 @@ package install
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 var (
@@ -26,7 +28,6 @@ func Install(repo string) error {
 	var selectedStr string
 	fmt.Print("Your selection: ")
 	fmt.Scanln(&selectedStr)
-
 	selectedIdx, err := strconv.Atoi(selectedStr)
 	if err != nil {
 		return err
@@ -44,9 +45,66 @@ func Install(repo string) error {
 	}
 	fmt.Println("Downloaded successfully.")
 
-	if err := uncompressFile(filePath); err != nil {
+	if err := uncompressFile(repoDir, selectedAsset.Name); err != nil {
 		return err
 	}
 
+	i := 1
+	filesMap := map[int]string{}
+	filepath.Walk(repoDir, func(path string, info fs.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			return nil
+		}
+
+		p := strings.TrimPrefix(path, fmt.Sprintf("%s/", repoDir))
+		filesMap[i] = p
+		fmt.Printf("%2d) %s\n", i, p)
+
+		i++
+		return nil
+	})
+
+	if len(filesMap) == 1 {
+		selectedIdx = 1
+	} else {
+		fmt.Print("Your selection: ")
+		fmt.Scanln(&selectedStr)
+		selectedIdx, err = strconv.Atoi(selectedStr)
+		if err != nil {
+			return err
+		}
+	}
+	selectedFile := filesMap[selectedIdx]
+
+	// os.Rename(
+	// 	filepath.Join(repoDir, selectedFile),
+	// 	filepath.Join(binDir, filepath.Base(selectedFile)),
+	// )
+	copyFile(
+		filepath.Join(repoDir, selectedFile),
+		filepath.Join(binDir, filepath.Base(selectedFile)),
+	)
+	fmt.Println("File moved to bin folder")
+
+	// os.RemoveAll(repoDir)
+
 	return nil
+}
+
+func copyFile(source, destination string) {
+	input, err := os.ReadFile(source)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	err = os.WriteFile(destination, input, 0644)
+	if err != nil {
+		fmt.Println("Error creating", destination)
+		fmt.Println(err)
+		return
+	}
 }

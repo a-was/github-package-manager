@@ -1,12 +1,11 @@
 package install
 
 import (
-	"errors"
 	"os/exec"
 	"path/filepath"
 )
 
-func uncompressFile(filename string) error {
+func uncompressFile(baseDir, filename string) error {
 	ext := filepath.Ext(filename)
 	u := uncompress{
 		filename: filename,
@@ -32,7 +31,9 @@ func uncompressFile(filename string) error {
 	case ".jar":
 		u.cmd = []string{"jar", "-xvf"}
 	default:
-		return errors.New("unsupported file extension")
+		// not an archive
+		return nil
+		// return errors.New("unsupported file extension")
 	}
 
 	if err := u.exec(); err != nil {
@@ -44,7 +45,6 @@ func uncompressFile(filename string) error {
 type uncompress struct {
 	filename string
 	cmd      []string
-	target   string
 }
 
 func (u *uncompress) exec() error {
