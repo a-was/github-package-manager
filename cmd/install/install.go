@@ -45,6 +45,7 @@ func Install(repo string) error {
 
 	filePath := filepath.Join(repoDir, selectedAsset.Name)
 
+	os.RemoveAll(repoDir)
 	os.MkdirAll(repoDir, 0755)
 	os.MkdirAll(binDir, 0755)
 
