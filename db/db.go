@@ -2,9 +2,10 @@ package db
 
 import (
 	"encoding/json"
-	"github-package-manager/config"
-	"github-package-manager/github"
 	"os"
+
+	"github.com/a-was/github-package-manager/config"
+	"github.com/a-was/github-package-manager/github"
 )
 
 type dbT struct {

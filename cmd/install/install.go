@@ -2,9 +2,6 @@ package install
 
 import (
 	"fmt"
-	"github-package-manager/config"
-	"github-package-manager/db"
-	"github-package-manager/github"
 	"io"
 	"io/fs"
 	"net/http"
@@ -12,6 +9,10 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/a-was/github-package-manager/config"
+	"github.com/a-was/github-package-manager/db"
+	"github.com/a-was/github-package-manager/github"
 )
 
 var (

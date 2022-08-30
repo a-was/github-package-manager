@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"errors"
-	"github-package-manager/cmd/install"
 	"regexp"
+
+	"github.com/a-was/github-package-manager/cmd/install"
 
 	"github.com/spf13/cobra"
 )

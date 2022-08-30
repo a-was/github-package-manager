@@ -1,4 +1,4 @@
-module github-package-manager
+module github.com/a-was/github-package-manager
 
 go 1.18
 
