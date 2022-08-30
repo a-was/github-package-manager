@@ -121,7 +121,7 @@ func downloadFile(url, filepath string) error {
 	}
 
 	file.Close()
-	os.Rename(tmpFilepath, filepath)
+	_ = os.Rename(tmpFilepath, filepath)
 	return nil
 }
 
@@ -132,7 +132,7 @@ func copyFile(source, destination string) {
 		return
 	}
 
-	err = os.WriteFile(destination, input, 0644)
+	err = os.WriteFile(destination, input, 0744)
 	if err != nil {
 		fmt.Println("Error creating", destination)
 		fmt.Println(err)
