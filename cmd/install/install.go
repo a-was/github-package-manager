@@ -1,6 +1,7 @@
 package install
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -42,6 +43,9 @@ func Install(repo string) error {
 	selectedIdx, err := strconv.Atoi(selectedStr)
 	if err != nil {
 		return err
+	}
+	if 0 > selectedIdx || selectedIdx > len(release.Assets) {
+		return errors.New("invalid selection")
 	}
 	selectedAsset := release.Assets[selectedIdx-1]
 
@@ -89,12 +93,18 @@ func Install(repo string) error {
 			return err
 		}
 	}
-	selectedFile := filesMap[selectedIdx]
+	selectedFile, ok := filesMap[selectedIdx]
+	if !ok {
+		return errors.New("invalid selection")
+	}
 
-	copyFile(
+	err = copyFile(
 		filepath.Join(repoFolder, selectedFile),
 		filepath.Join(binFolder, filepath.Base(selectedFile)),
 	)
+	if err != nil {
+		return err
+	}
 	fmt.Println("File installed into bin folder")
 
 	db.SaveRelease(release)
@@ -121,22 +131,20 @@ func downloadFile(url, filepath string) error {
 		return err
 	}
 
-	file.Close()
+	_ = file.Close()
 	_ = os.Rename(tmpFilepath, filepath)
 	return nil
 }
 
-func copyFile(source, destination string) {
+func copyFile(source, destination string) error {
 	input, err := os.ReadFile(source)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return err
 	}
 
 	err = os.WriteFile(destination, input, 0744)
 	if err != nil {
-		fmt.Println("Error creating", destination)
-		fmt.Println(err)
-		return
+		return err
 	}
+	return nil
 }
