@@ -42,6 +42,7 @@ github-package-manager
 ```
 
 ### Install repo
+For example to install [bat](https://github.com/sharkdp/bat)
 ```bash
 github-package-manager install sharkdp/bat
 ```
