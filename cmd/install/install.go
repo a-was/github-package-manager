@@ -65,6 +65,7 @@ func Install(repo string) error {
 		return err
 	}
 
+	fmt.Println("Select which file to install:")
 	i := 1
 	filesMap := map[int]string{}
 	filepath.Walk(repoFolder, func(path string, info fs.FileInfo, err error) error {
@@ -105,7 +106,8 @@ func Install(repo string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("File installed into bin folder")
+	fmt.Printf("Repo cloned into %s folder\n", repoFolder)
+	fmt.Printf("File installed into %s folder\n", binFolder)
 
 	db.SaveRelease(release)
 
