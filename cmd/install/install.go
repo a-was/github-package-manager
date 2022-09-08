@@ -38,9 +38,7 @@ func Install(repo string, force bool) error {
 		fmt.Printf("%2d) %s\n", i+1, a.Name)
 	}
 	var selectedIdx int
-	if err = prompt.Get("Your selection: ", &selectedIdx); err != nil {
-		return err
-	}
+	prompt.Get("Your selection: ", &selectedIdx)
 	if 0 > selectedIdx || selectedIdx > len(release.Assets) {
 		return errors.New("invalid selection")
 	}
@@ -83,11 +81,17 @@ func Install(repo string, force bool) error {
 	if len(filesMap) == 1 {
 		selectedIdx = 1
 	} else {
-		selectedIdx = 0
-		if err = prompt.Get("Your selection: ", &selectedIdx); err != nil {
-			return err
-		}
+		prompt.Get("Your selection (empty to skip installation): ", &selectedIdx)
 	}
+
+	if selectedIdx == -1 {
+		// do not install file
+		fmt.Println()
+		fmt.Println("Skipped file installation")
+		fmt.Printf("Repo cloned into %s folder, you can install it manually\n", repoFolder)
+		return nil
+	}
+
 	selectedFile, ok := filesMap[selectedIdx]
 	if !ok {
 		return errors.New("invalid selection")

@@ -5,7 +5,8 @@ import (
 	"strconv"
 )
 
-func Get[T string | int](text string, v *T) error {
+// when using int Get sets v to -1 if input was invalid
+func Get[T string | int](text string, v *T) {
 	fmt.Print(text)
 
 	var input string
@@ -17,9 +18,8 @@ func Get[T string | int](text string, v *T) error {
 	case *int:
 		parsed, err := strconv.Atoi(input)
 		if err != nil {
-			return err
+			parsed = -1
 		}
 		*v = parsed
 	}
-	return nil
 }
