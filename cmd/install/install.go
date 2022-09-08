@@ -93,14 +93,16 @@ func Install(repo string, force bool) error {
 		return errors.New("invalid selection")
 	}
 
+	baseSelected := filepath.Base(selectedFile)
 	if err = copyFile(
 		filepath.Join(repoFolder, selectedFile),
-		filepath.Join(binFolder, filepath.Base(selectedFile)),
+		filepath.Join(binFolder, baseSelected),
 	); err != nil {
 		return err
 	}
+	fmt.Println()
 	fmt.Printf("Repo cloned into %s folder\n", repoFolder)
-	fmt.Printf("File installed into %s folder\n", binFolder)
+	fmt.Printf("File %s installed into %s folder\n", baseSelected, binFolder)
 
 	db.SaveRelease(release)
 
