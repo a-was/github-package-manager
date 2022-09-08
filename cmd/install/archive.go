@@ -31,9 +31,9 @@ func uncompressFile(baseFolder, filename string) error {
 			cmd = []string{"tar", "xzf"}
 		case ".gz":
 			cmd = []string{"gunzip"}
-		case ".tar.bz2", ".tbz2":
+		case ".tar.bz", ".tbz", ".tar.bz2", ".tbz2":
 			cmd = []string{"tar", "xjf"}
-		case ".bz2":
+		case ".bz", ".bz2":
 			cmd = []string{"bunzip2"}
 		case ".tar":
 			cmd = []string{"tar", "xf"}
