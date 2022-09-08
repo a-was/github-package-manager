@@ -21,14 +21,14 @@ var (
 	binFolder  = config.BinFolder
 )
 
-func Install(repo string) error {
+func Install(repo string, force bool) error {
 	fmt.Println("Using repo", repo)
 	release, err := github.GetLatestRelease(repo)
 	if err != nil {
 		return err
 	}
 
-	if db.CheckIfInstalled(release) {
+	if !force && db.CheckIfInstalled(release) {
 		fmt.Println("Newest version already installed")
 		return nil
 	}

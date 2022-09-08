@@ -9,7 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var force bool
+
 func init() {
+	installCmd.Flags().BoolVarP(&force, "force", "f", false, "Skip database check")
 	rootCmd.AddCommand(installCmd)
 }
 
@@ -29,6 +32,6 @@ var installCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return install.Install(args[0])
+		return install.Install(args[0], force)
 	},
 }
