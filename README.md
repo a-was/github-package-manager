@@ -51,6 +51,6 @@ github-package-manager install sharkdp/bat
 - Database
     - Selected asset?
 - Handle .deb / .rpm / .Appimage files
-- bin folder
-    - ~/.bin?
 - `update` command
+- docs
+    - Long command descriptions

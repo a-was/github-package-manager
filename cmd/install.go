@@ -16,7 +16,7 @@ func init() {
 var installCmd = &cobra.Command{
 	Use:   "install {repo}",
 	Short: "Install repositories",
-	Long:  `Install GitHub repository.`, // TODO:
+	Long:  `Install GitHub repository.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return errors.New("expected a github repo")
