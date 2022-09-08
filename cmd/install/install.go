@@ -8,12 +8,12 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/a-was/github-package-manager/config"
 	"github.com/a-was/github-package-manager/db"
 	"github.com/a-was/github-package-manager/github"
+	"github.com/a-was/github-package-manager/prompt"
 )
 
 var (
@@ -37,11 +37,8 @@ func Install(repo string) error {
 	for i, a := range release.Assets {
 		fmt.Printf("%2d) %s\n", i+1, a.Name)
 	}
-	var selectedStr string
-	fmt.Print("Your selection: ")
-	fmt.Scanln(&selectedStr)
-	selectedIdx, err := strconv.Atoi(selectedStr)
-	if err != nil {
+	var selectedIdx int
+	if err = prompt.Get("Your selection: ", &selectedIdx); err != nil {
 		return err
 	}
 	if 0 > selectedIdx || selectedIdx > len(release.Assets) {
@@ -86,10 +83,8 @@ func Install(repo string) error {
 	if len(filesMap) == 1 {
 		selectedIdx = 1
 	} else {
-		fmt.Print("Your selection: ")
-		fmt.Scanln(&selectedStr)
-		selectedIdx, err = strconv.Atoi(selectedStr)
-		if err != nil {
+		selectedIdx = 0
+		if err = prompt.Get("Your selection: ", &selectedIdx); err != nil {
 			return err
 		}
 	}
