@@ -1,6 +1,9 @@
 package config
 
-import "os"
+import (
+	"os"
+	"regexp"
+)
 
 var (
 	DatabasePath = getenv("GHPM_DATABASE_PATH", "$HOME/.ghpm.json")
@@ -15,3 +18,8 @@ func getenv(env, fallback string) string {
 	}
 	return os.ExpandEnv(v)
 }
+
+var (
+	RegexRepo          = regexp.MustCompile(`^[a-zA-Z0-9\-]+/[a-zA-Z0-9\-]+$`)
+	RegexSearchPattern = regexp.MustCompile(`^[a-zA-Z0-9\-/]+$`)
+)

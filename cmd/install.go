@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"errors"
-	"regexp"
 
 	"github.com/a-was/github-package-manager/cmd/install"
+	"github.com/a-was/github-package-manager/config"
 
 	"github.com/spf13/cobra"
 )
@@ -22,7 +22,7 @@ var installCmd = &cobra.Command{
 			return errors.New("expected a github repo")
 		}
 
-		if !regexp.MustCompile(`^[a-zA-Z0-9\-]+/[a-zA-Z0-9\-]+$`).MatchString(args[0]) {
+		if !config.RegexRepo.MatchString(args[0]) {
 			return errors.New("invalid github repo")
 		}
 
