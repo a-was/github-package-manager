@@ -56,12 +56,12 @@ func Install(repo string) error {
 	os.MkdirAll(binFolder, 0755)
 
 	fmt.Printf("Selected file: %s, downloading...\n", selectedAsset.Name)
-	if err := downloadFile(selectedAsset.URL, filePath); err != nil {
+	if err = downloadFile(selectedAsset.URL, filePath); err != nil {
 		return err
 	}
 	fmt.Println("Downloaded successfully.")
 
-	if err := uncompressFile(repoFolder, selectedAsset.Name); err != nil {
+	if err = uncompressFile(repoFolder, selectedAsset.Name); err != nil {
 		return err
 	}
 
@@ -79,7 +79,6 @@ func Install(repo string) error {
 		p := strings.TrimPrefix(path, fmt.Sprintf("%s/", repoFolder))
 		filesMap[i] = p
 		fmt.Printf("%2d) %s\n", i, p)
-
 		i++
 		return nil
 	})
@@ -99,11 +98,10 @@ func Install(repo string) error {
 		return errors.New("invalid selection")
 	}
 
-	err = copyFile(
+	if err = copyFile(
 		filepath.Join(repoFolder, selectedFile),
 		filepath.Join(binFolder, filepath.Base(selectedFile)),
-	)
-	if err != nil {
+	); err != nil {
 		return err
 	}
 	fmt.Printf("Repo cloned into %s folder\n", repoFolder)
@@ -128,8 +126,7 @@ func downloadFile(url, filepath string) error {
 		return err
 	}
 
-	_, err = io.Copy(file, resp.Body)
-	if err != nil {
+	if _, err = io.Copy(file, resp.Body); err != nil {
 		return err
 	}
 
@@ -144,8 +141,7 @@ func copyFile(source, destination string) error {
 		return err
 	}
 
-	err = os.WriteFile(destination, input, 0744)
-	if err != nil {
+	if err = os.WriteFile(destination, input, 0744); err != nil {
 		return err
 	}
 	return nil
