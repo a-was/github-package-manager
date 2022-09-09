@@ -1,4 +1,4 @@
-# github-package-manager
+# GitHub Package Manager
 
 Based on https://gist.github.com/redraw/13ff169741d502b6616dd05dccaa5554
 
@@ -41,13 +41,27 @@ Default `$HOME/tmp/`
 github-package-manager
 ```
 
+### Search for repo
+For example to search for a [bat](https://github.com/sharkdp/bat) (to see which username to use)
+```bash
+github-package-manager search bat
+```
+
 ### Install repo
 For example to install [bat](https://github.com/sharkdp/bat)
 ```bash
 github-package-manager install sharkdp/bat
 ```
 
+### Update all repos
+```bash
+github-package-manager update
+```
+
 # Todo
 - Handle .deb / .rpm / .Appimage files
 - docs
     - Long command descriptions
+
+# License
+[MIT](https://choosealicense.com/licenses/mit/)
