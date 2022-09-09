@@ -88,10 +88,15 @@ func installRelease(c Config) error {
 
 	fmt.Println("Select which file to install:")
 	i := 1
+	var skipped bool
 	filesMap := map[int]string{}
 	filepath.Walk(repoFolder, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
+		}
+		if i > 50 {
+			skipped = true
+			return nil
 		}
 		if info.IsDir() {
 			return nil
@@ -108,6 +113,9 @@ func installRelease(c Config) error {
 		return nil
 	})
 
+	if skipped {
+		fmt.Println("Warning! Only first 50 elements are shown")
+	}
 	var selectedFileIdx int
 	prompt.Get("Your selection (empty to skip installation): ", &selectedFileIdx)
 	if selectedFileIdx == -1 {
