@@ -49,8 +49,7 @@ github-package-manager install sharkdp/bat
 
 # Todo
 - Database
-    - Selected asset?
+    - Selected asset? Use in update or show recommended
 - Handle .deb / .rpm / .Appimage files
-- `update` command
 - docs
     - Long command descriptions

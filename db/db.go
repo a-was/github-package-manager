@@ -48,3 +48,8 @@ func SaveRelease(r *github.Release) {
 	}
 	db.dump()
 }
+
+func GetInstalled() map[string]version {
+	db.load()
+	return db.Installed
+}

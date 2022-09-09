@@ -32,7 +32,15 @@ func Install(repo string, force bool) error {
 		fmt.Println("Newest version already installed")
 		return nil
 	}
+	return installRelease(repo, release)
+}
 
+func Update(repo string, release *github.Release) error {
+	fmt.Println("Updating", repo)
+	return installRelease(repo, release)
+}
+
+func installRelease(repo string, release *github.Release) error {
 	fmt.Println("Select download file:")
 	for i, a := range release.Assets {
 		fmt.Printf("%2d) %s\n", i+1, a.Name)
@@ -46,6 +54,7 @@ func Install(repo string, force bool) error {
 
 	filePath := filepath.Join(repoFolder, selectedAsset.Name)
 
+	var err error
 	os.RemoveAll(repoFolder)
 	os.MkdirAll(repoFolder, 0755)
 	os.MkdirAll(binFolder, 0755)
