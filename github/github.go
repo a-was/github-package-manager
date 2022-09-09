@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/a-was/github-package-manager/config"
 )
 
 type Asset struct {
@@ -26,6 +28,10 @@ func GetLatestRelease(repo string) (*Release, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, config.ErrorApiWrongStatus
+	}
 
 	// parse the latest release
 	release := &Release{

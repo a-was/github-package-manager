@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/a-was/github-package-manager/cmd/install"
+	"github.com/a-was/github-package-manager/config"
 	"github.com/a-was/github-package-manager/db"
 	"github.com/a-was/github-package-manager/github"
 	"github.com/a-was/github-package-manager/prompt"
@@ -25,11 +26,14 @@ var updateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "Update all installed repos",
 	Long:  ``,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		toUpdate := map[string]update{}
 		for repo, version := range db.GetInstalled() {
 			fmt.Printf("Checking %s...\n", repo)
-			latest, _ := github.GetLatestRelease(repo)
+			latest, err := github.GetLatestRelease(repo)
+			if err != nil {
+				return err
+			}
 			if version.Tag != latest.Tag {
 				toUpdate[repo] = update{
 					Latest: latest,
@@ -41,7 +45,7 @@ var updateCmd = &cobra.Command{
 
 		if len(toUpdate) == 0 {
 			fmt.Println("Nothing to update")
-			return
+			return nil
 		}
 
 		table := [][]string{
@@ -57,12 +61,18 @@ var updateCmd = &cobra.Command{
 		var input string
 		prompt.Get("Proceed? [y/N]\n", &input)
 		if input != "y" {
-			fmt.Println("Aborted")
-			return
+			return config.ErrorAborted
 		}
 		for repo, release := range toUpdate {
 			fmt.Println()
-			install.Update(repo, release.Latest)
+			if err := install.Update(repo, release.Latest); err != nil {
+				fmt.Println(err)
+				prompt.Get("Continue? [y/N]", &input)
+				if input != "y" {
+					return config.ErrorAborted
+				}
+			}
 		}
+		return nil
 	},
 }

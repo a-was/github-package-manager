@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"os"
 	"regexp"
 )
@@ -22,4 +23,7 @@ func getenv(env, fallback string) string {
 var (
 	RegexRepo          = regexp.MustCompile(`^[a-zA-Z0-9\-]+/[a-zA-Z0-9\-]+$`)
 	RegexSearchPattern = regexp.MustCompile(`^[a-zA-Z0-9\-/]+$`)
+
+	ErrorAborted        = errors.New("aborted")
+	ErrorApiWrongStatus = errors.New("API returned wrong status")
 )
