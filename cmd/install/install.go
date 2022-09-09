@@ -21,36 +21,53 @@ var (
 	binFolder  = config.BinFolder
 )
 
-func Install(repo string, force bool) error {
-	fmt.Println("Using repo", repo)
-	release, err := github.GetLatestRelease(repo)
+type Config struct {
+	Repo    string
+	Release *github.Release
+
+	Force bool
+
+	RecommendedAsset int
+	RecommendedFile  int
+}
+
+func Install(c Config) error {
+	fmt.Println("Using repo", c.Repo)
+	release, err := github.GetLatestRelease(c.Repo)
 	if err != nil {
 		return err
 	}
 
-	if !force && db.CheckIfInstalled(release) {
+	if !c.Force && db.CheckIfInstalled(release) {
 		fmt.Println("Newest version already installed")
 		return nil
 	}
-	return installRelease(repo, release)
+
+	c.Release = release
+
+	return installRelease(c)
 }
 
-func Update(repo string, release *github.Release) error {
-	fmt.Println("Updating", repo)
-	return installRelease(repo, release)
+func Update(c Config) error {
+	fmt.Println("Updating", c.Repo)
+	return installRelease(c)
 }
 
-func installRelease(repo string, release *github.Release) error {
+func installRelease(c Config) error {
 	fmt.Println("Select download file:")
-	for i, a := range release.Assets {
-		fmt.Printf("%2d) %s\n", i+1, a.Name)
+	for i, a := range c.Release.Assets {
+		if i+1 == c.RecommendedAsset {
+			fmt.Printf("%2d) (recommended) %s\n", i+1, a.Name)
+		} else {
+			fmt.Printf("%2d)  %s\n", i+1, a.Name)
+		}
 	}
-	var selectedIdx int
-	prompt.Get("Your selection: ", &selectedIdx)
-	if 0 > selectedIdx || selectedIdx > len(release.Assets) {
+	var selectedAssetIdx int
+	prompt.Get("Your selection: ", &selectedAssetIdx)
+	if 0 > selectedAssetIdx || selectedAssetIdx > len(c.Release.Assets) {
 		return errors.New("invalid selection")
 	}
-	selectedAsset := release.Assets[selectedIdx-1]
+	selectedAsset := c.Release.Assets[selectedAssetIdx-1]
 
 	filePath := filepath.Join(repoFolder, selectedAsset.Name)
 
@@ -82,26 +99,28 @@ func installRelease(repo string, release *github.Release) error {
 
 		p := strings.TrimPrefix(path, fmt.Sprintf("%s/", repoFolder))
 		filesMap[i] = p
-		fmt.Printf("%2d) %s\n", i, p)
+		if i == c.RecommendedFile {
+			fmt.Printf("%2d) (recommended) %s\n", i, p)
+		} else {
+			fmt.Printf("%2d)  %s\n", i, p)
+		}
 		i++
 		return nil
 	})
 
-	if len(filesMap) == 1 {
-		selectedIdx = 1
-	} else {
-		prompt.Get("Your selection (empty to skip installation): ", &selectedIdx)
-	}
-
-	if selectedIdx == -1 {
+	var selectedFileIdx int
+	prompt.Get("Your selection (empty to skip installation): ", &selectedFileIdx)
+	if selectedFileIdx == -1 {
 		// do not install file
 		fmt.Println()
 		fmt.Println("Skipped file installation")
 		fmt.Printf("Repo cloned into %s folder, you can install it manually\n", repoFolder)
+
+		db.SaveVersion(c.Release, selectedAssetIdx, selectedFileIdx)
 		return nil
 	}
 
-	selectedFile, ok := filesMap[selectedIdx]
+	selectedFile, ok := filesMap[selectedFileIdx]
 	if !ok {
 		return errors.New("invalid selection")
 	}
@@ -117,7 +136,7 @@ func installRelease(repo string, release *github.Release) error {
 	fmt.Printf("Repo cloned into %s folder\n", repoFolder)
 	fmt.Printf("File %s installed into %s folder\n", baseSelected, binFolder)
 
-	db.SaveRelease(release)
+	db.SaveVersion(c.Release, selectedAssetIdx, selectedFileIdx)
 
 	return nil
 }

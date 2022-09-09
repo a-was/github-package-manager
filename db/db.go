@@ -13,8 +13,10 @@ type dbT struct {
 }
 
 type version struct {
-	ID  int
-	Tag string
+	ID            int
+	Tag           string
+	SelectedAsset int
+	SelectedFile  int
 }
 
 var db = dbT{
@@ -40,11 +42,13 @@ func CheckIfInstalled(r *github.Release) bool {
 	return ok && v.Tag == r.Tag
 }
 
-func SaveRelease(r *github.Release) {
+func SaveVersion(r *github.Release, selectedAsset, selectedFile int) {
 	db.load()
 	db.Installed[r.Repo] = version{
-		ID:  r.ID,
-		Tag: r.Tag,
+		ID:            r.ID,
+		Tag:           r.Tag,
+		SelectedAsset: selectedAsset,
+		SelectedFile:  selectedFile,
 	}
 	db.dump()
 }

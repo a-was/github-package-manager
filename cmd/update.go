@@ -17,9 +17,11 @@ func init() {
 }
 
 type update struct {
-	Latest *github.Release
-	From   string
-	To     string
+	Latest           *github.Release
+	From             string
+	To               string
+	RecommendedAsset int
+	RecommendedFile  int
 }
 
 var updateCmd = &cobra.Command{
@@ -36,9 +38,11 @@ var updateCmd = &cobra.Command{
 			}
 			if version.Tag != latest.Tag {
 				toUpdate[repo] = update{
-					Latest: latest,
-					From:   version.Tag,
-					To:     latest.Tag,
+					Latest:           latest,
+					From:             version.Tag,
+					To:               latest.Tag,
+					RecommendedAsset: version.SelectedAsset,
+					RecommendedFile:  version.SelectedFile,
 				}
 			}
 		}
@@ -59,13 +63,19 @@ var updateCmd = &cobra.Command{
 		fmt.Println()
 
 		var input string
-		prompt.Get("Proceed? [y/N]\n", &input)
+		prompt.Get("Proceed? [y/N] ", &input)
 		if input != "y" {
 			return config.ErrorAborted
 		}
 		for repo, release := range toUpdate {
 			fmt.Println()
-			if err := install.Update(repo, release.Latest); err != nil {
+			c := install.Config{
+				Repo:             repo,
+				Release:          release.Latest,
+				RecommendedAsset: release.RecommendedAsset,
+				RecommendedFile:  release.RecommendedFile,
+			}
+			if err := install.Update(c); err != nil {
 				fmt.Println(err)
 				prompt.Get("Continue? [y/N]", &input)
 				if input != "y" {

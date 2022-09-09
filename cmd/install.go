@@ -32,6 +32,9 @@ var installCmd = &cobra.Command{
 		return nil
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return install.Install(args[0], force)
+		return install.Install(install.Config{
+			Repo:  args[0],
+			Force: force,
+		})
 	},
 }
