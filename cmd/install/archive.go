@@ -53,14 +53,12 @@ func uncompressFile(baseFolder, filename string) error {
 	}
 	cmd = append(cmd, filename)
 
+	fmt.Println("Extracting...")
+
 	command := exec.Command(cmd[0], cmd[1:]...)
 	command.Dir = repoFolder
-	err := command.Run()
-	// d, err := command.CombinedOutput()
-	// fmt.Println("uncompress:", string(d), err)
-	if err != nil {
+	if err := command.Run(); err != nil {
 		return err
 	}
-
 	return nil
 }
