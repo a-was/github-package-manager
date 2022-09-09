@@ -2,13 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/a-was/github-package-manager/cmd/install"
 	"github.com/a-was/github-package-manager/db"
 	"github.com/a-was/github-package-manager/github"
 	"github.com/a-was/github-package-manager/prompt"
-	"github.com/jedib0t/go-pretty/v6/table"
 
 	"github.com/spf13/cobra"
 )
@@ -46,14 +44,14 @@ var updateCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Println()
-		t := table.NewWriter()
-		t.SetOutputMirror(os.Stdout)
-		t.AppendHeader(table.Row{"Repository", "Old version", "New version"})
-		for repo, release := range toUpdate {
-			t.AppendRow(table.Row{repo, release.From, release.To})
+		table := [][]string{
+			{"Repository", "Old version", "New version"},
 		}
-		t.Render()
+		fmt.Println()
+		for repo, release := range toUpdate {
+			table = append(table, []string{repo, release.From, release.To})
+		}
+		prompt.PrintTable(table)
 		fmt.Println()
 
 		var input string
