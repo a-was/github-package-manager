@@ -51,10 +51,10 @@ var updateCmd = &cobra.Command{
 		table := [][]string{
 			{"Repository", "Old version", "New version"},
 		}
-		fmt.Println()
 		for repo, release := range toUpdate {
 			table = append(table, []string{repo, release.From, release.To})
 		}
+		fmt.Println()
 		prompt.PrintTable(table)
 		fmt.Println()
 
