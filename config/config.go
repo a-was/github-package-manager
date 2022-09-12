@@ -21,6 +21,8 @@ func getenv(env, fallback string) string {
 }
 
 var (
+	Version = "development" // set by ldflags
+
 	RegexRepo          = regexp.MustCompile(`^[a-zA-Z0-9\-]+/[a-zA-Z0-9\-]+$`)
 	RegexSearchPattern = regexp.MustCompile(`^[a-zA-Z0-9\-/]+$`)
 

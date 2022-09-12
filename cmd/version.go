@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/a-was/github-package-manager/config"
+
 	"github.com/spf13/cobra"
 )
 
@@ -15,6 +17,6 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number of Github Package Manager",
 	Long:  `All software has versions. This is Github Package Manager's`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("You are using Github Package Manager v0.1.0")
+		fmt.Printf("github-package-manager %s\n", config.Version)
 	},
 }
