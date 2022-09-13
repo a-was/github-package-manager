@@ -19,7 +19,9 @@ func init() {
 var installCmd = &cobra.Command{
 	Use:   "install {repo}",
 	Short: "Install repositories",
-	Long:  `Install GitHub repository.`,
+	Long: `Install requested GitHub repository.
+It lets You select asset from latest release, unpack it (if it is an archive)
+and select which binary to copy to configurable bin folder.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return errors.New("expected a github repo")

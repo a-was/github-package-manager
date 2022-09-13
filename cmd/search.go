@@ -17,7 +17,7 @@ func init() {
 var searchCmd = &cobra.Command{
 	Use:   "search {pattern}",
 	Short: "Search for repos",
-	Long:  `Search shows first 10 best {pattern} matching results`,
+	Long:  "Search shows first 10 best {pattern} matching results",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return errors.New("expected search pattern")

@@ -4,6 +4,9 @@ Based on https://gist.github.com/redraw/13ff169741d502b6616dd05dccaa5554
 
 # Installation
 
+### Using asset from release
+Just download binary from latest release
+
 ### Using `go`
 ```bash
 go install github.com/a-was/github-package-manager@latest
@@ -14,6 +17,11 @@ go install github.com/a-was/github-package-manager@latest
 git clone https://github.com/a-was/github-package-manager.git
 cd github-package-manager
 go build .
+```
+
+### Using github-package-manager
+```bash
+github-package-manager install a-was/github-package-manager
 ```
 
 # Configuration
@@ -53,7 +61,7 @@ For example to install [bat](https://github.com/sharkdp/bat)
 github-package-manager install sharkdp/bat
 ```
 
-### Update all repos
+### Update all installed repos
 ```bash
 github-package-manager update
 ```

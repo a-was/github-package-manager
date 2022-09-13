@@ -27,7 +27,7 @@ type update struct {
 var updateCmd = &cobra.Command{
 	Use:   "update",
 	Short: "Update all installed repos",
-	Long:  ``,
+	Long:  "Update checks all installed repositories to see if they have a new release.",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		toUpdate := map[string]update{}
 		for repo, version := range db.GetInstalled() {
