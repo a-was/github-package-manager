@@ -17,11 +17,11 @@ func init() {
 }
 
 type update struct {
-	Latest           *github.Release
-	From             string
-	To               string
-	RecommendedAsset int
-	RecommendedFile  int
+	latest           *github.Release
+	from             string
+	to               string
+	recommendedAsset int
+	recommendedFile  int
 }
 
 var updateCmd = &cobra.Command{
@@ -38,11 +38,11 @@ var updateCmd = &cobra.Command{
 			}
 			if version.Tag != latest.Tag {
 				toUpdate[repo] = update{
-					Latest:           latest,
-					From:             version.Tag,
-					To:               latest.Tag,
-					RecommendedAsset: version.SelectedAsset,
-					RecommendedFile:  version.SelectedFile,
+					latest:           latest,
+					from:             version.Tag,
+					to:               latest.Tag,
+					recommendedAsset: version.SelectedAsset,
+					recommendedFile:  version.SelectedFile,
 				}
 			}
 		}
@@ -56,7 +56,7 @@ var updateCmd = &cobra.Command{
 			{"Repository", "Old version", "New version"},
 		}
 		for repo, release := range toUpdate {
-			table = append(table, []string{repo, release.From, release.To})
+			table = append(table, []string{repo, release.from, release.to})
 		}
 		fmt.Println()
 		prompt.PrintTable(table)
@@ -71,9 +71,9 @@ var updateCmd = &cobra.Command{
 			fmt.Println()
 			c := install.Config{
 				Repo:             repo,
-				Release:          release.Latest,
-				RecommendedAsset: release.RecommendedAsset,
-				RecommendedFile:  release.RecommendedFile,
+				Release:          release.latest,
+				RecommendedAsset: release.recommendedAsset,
+				RecommendedFile:  release.recommendedFile,
 			}
 			if err := install.Update(c); err != nil {
 				fmt.Println(err)
