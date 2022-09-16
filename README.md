@@ -66,10 +66,5 @@ github-package-manager install sharkdp/bat
 github-package-manager update
 ```
 
-# Todo
-- Handle .deb / .rpm / .Appimage files
-- docs
-    - Long command descriptions
-
 # License
 [MIT](https://choosealicense.com/licenses/mit/)
