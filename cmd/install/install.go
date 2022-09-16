@@ -132,8 +132,20 @@ func installRelease(c Config) error {
 	if !ok {
 		return errors.New("invalid selection")
 	}
-
 	baseSelected := filepath.Base(selectedFile)
+
+	installed, err := installPackage(selectedFile)
+	if err != nil {
+		return err
+	}
+	if installed {
+		fmt.Println()
+		fmt.Printf("File %s installed via package manager\n", baseSelected)
+
+		db.SaveVersion(c.Release, selectedAssetIdx, selectedFileIdx)
+		return nil
+	}
+
 	if err = copyFile(
 		filepath.Join(repoFolder, selectedFile),
 		filepath.Join(binFolder, baseSelected),
